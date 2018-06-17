@@ -9,5 +9,9 @@ namespace WebAPIHUB
         public Task Send(string message){
             return Clients.All.SendAsync("Send",message);
         }
+
+        public Task Broadcast(string message){
+            return Clients.Others.SendAsync("Send",message);
+        }
     }
 }
