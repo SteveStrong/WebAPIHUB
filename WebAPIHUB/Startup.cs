@@ -24,6 +24,16 @@ namespace WebAPIHUB
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var policy = new Microsoft.AspNetCore.Cors.Infrastructure.CorsPolicy();
+            policy.Headers.Add("*");
+            policy.Methods.Add("*");
+            policy.Origins.Add("*");
+            policy.SupportsCredentials = true;
+        
+            services.AddCors(x => x.AddPolicy("corsGlobalPolicy", policy));
+            
+            services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -34,6 +44,13 @@ namespace WebAPIHUB
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("corsGlobalPolicy");
+            app.UseFileServer();
+
+            app.UseSignalR( route => {
+                route.MapHub<ApplicationHub>("/app");
+            });
 
             app.UseMvc();
         }
